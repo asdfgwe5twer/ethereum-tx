@@ -2,9 +2,9 @@
 
 /**
  * This file is part of ethereum-tx package.
- * 
+ *
  * (c) Kuan-Cheng,Lai <alk03073135@gmail.com>
- * 
+ *
  * @author Peter Lai <alk03073135@gmail.com>
  * @license MIT
  */
@@ -22,7 +22,7 @@ use Web3p\EthereumUtil\Util;
 /**
  * It's a base transaction for generating/serializing ethereum type transaction (EIP1559/EIP2930).
  * Only use this class to generate new type transaction
- * 
+ *
  * @author Peter Lai <alk03073135@gmail.com>
  * @link https://www.web3p.xyz
  * @filesource https://github.com/web3p/ethereum-tx
@@ -31,7 +31,7 @@ class TypeTransaction implements ArrayAccess
 {
     /**
      * Attribute map for keeping order of transaction key/value
-     * 
+     *
      * @var array
      */
     protected $attributeMap = [
@@ -99,49 +99,49 @@ class TypeTransaction implements ArrayAccess
 
     /**
      * Raw transaction data
-     * 
+     *
      * @var array
      */
     protected $txData = [];
 
     /**
      * RLP encoding instance
-     * 
+     *
      * @var \Web3p\RLP\RLP
      */
     protected $rlp;
 
     /**
      * secp256k1 elliptic curve instance
-     * 
+     *
      * @var \Elliptic\EC
      */
     protected $secp256k1;
 
     /**
      * Private key instance
-     * 
+     *
      * @var \Elliptic\EC\KeyPair
      */
     protected $privateKey;
 
     /**
      * Ethereum util instance
-     * 
+     *
      * @var \Web3p\EthereumUtil\Util
      */
     protected $util;
 
     /**
      * Transaction type
-     * 
+     *
      * @var string
      */
     protected $transactionType = '00';
 
     /**
      * construct
-     * 
+     *
      * @param array|string $txData
      * @return void
      */
@@ -184,7 +184,7 @@ class TypeTransaction implements ArrayAccess
 
     /**
      * Return the value in the transaction with given key or return the protected property value if get(property_name} function is existed.
-     * 
+     *
      * @param string $name key or protected property name
      * @return mixed
      */
@@ -200,7 +200,7 @@ class TypeTransaction implements ArrayAccess
 
     /**
      * Set the value in the transaction with given key or return the protected value if set(property_name} function is existed.
-     * 
+     *
      * @param string $name key, eg: to
      * @param mixed value
      * @return void
@@ -210,14 +210,15 @@ class TypeTransaction implements ArrayAccess
         $method = 'set' . ucfirst($name);
 
         if (method_exists($this, $method)) {
-            return call_user_func_array([$this, $method], [$value]);
+            call_user_func_array([$this, $method], [$value]);
+            return;
         }
-        return $this->offsetSet($name, $value);
+        $this->offsetSet($name, $value);
     }
 
     /**
      * Return hash of the ethereum transaction without signature.
-     * 
+     *
      * @return string hex encoded of the transaction
      */
     public function __toString()
@@ -227,12 +228,12 @@ class TypeTransaction implements ArrayAccess
 
     /**
      * Set the value in the transaction with given key.
-     * 
-     * @param string $offset key, eg: to
-     * @param string value
+     *
+     * @param mixed $offset key, eg: to
+     * @param mixed $value
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $txKey = isset($this->attributeMap[$offset]) ? $this->attributeMap[$offset] : null;
 
@@ -293,11 +294,11 @@ class TypeTransaction implements ArrayAccess
 
     /**
      * Return whether the value is in the transaction with given key.
-     * 
-     * @param string $offset key, eg: to
+     *
+     * @param mixed $offset key, eg: to
      * @return bool
      */
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         $txKey = isset($this->attributeMap[$offset]) ? $this->attributeMap[$offset] : null;
 
@@ -309,11 +310,11 @@ class TypeTransaction implements ArrayAccess
 
     /**
      * Unset the value in the transaction with given key.
-     * 
-     * @param string $offset key, eg: to
+     *
+     * @param mixed $offset key, eg: to
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         $txKey = isset($this->attributeMap[$offset]) ? $this->attributeMap[$offset] : null;
 
@@ -324,11 +325,11 @@ class TypeTransaction implements ArrayAccess
 
     /**
      * Return the value in the transaction with given key.
-     * 
-     * @param string $offset key, eg: to 
+     *
+     * @param mixed $offset key, eg: to
      * @return mixed value of the transaction
      */
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         $txKey = isset($this->attributeMap[$offset]) ? $this->attributeMap[$offset] : null;
 
@@ -340,7 +341,7 @@ class TypeTransaction implements ArrayAccess
 
     /**
      * Return raw ethereum transaction data.
-     * 
+     *
      * @return array raw ethereum transaction data
      */
     public function getTxData()
@@ -350,7 +351,7 @@ class TypeTransaction implements ArrayAccess
 
     /**
      * Return whether transaction type is valid (0x0 <= $transactionType <= 0x7f).
-     * 
+     *
      * @param integer $transactionType
      * @return boolean is transaction valid
      */
@@ -361,7 +362,7 @@ class TypeTransaction implements ArrayAccess
 
     /**
      * RLP serialize the ethereum transaction.
-     * 
+     *
      * @return string hex encoded of the serialized ethereum transaction
      */
     public function serialize()
@@ -382,7 +383,7 @@ class TypeTransaction implements ArrayAccess
 
     /**
      * Sign the transaction with given hex encoded private key.
-     * 
+     *
      * @param string $privateKey hex encoded private key
      * @return string hex encoded signed ethereum transaction
      */
@@ -440,7 +441,7 @@ class TypeTransaction implements ArrayAccess
 
     /**
      * Recover from address with given signature (r, s, v) if didn't set from.
-     * 
+     *
      * @return string hex encoded ethereum address
      */
     public function getFromAddress()
